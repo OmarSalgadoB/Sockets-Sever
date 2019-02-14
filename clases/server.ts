@@ -22,6 +22,7 @@ export default class Server {
         this.io = socketIO(this.httpServer);
 
         this.escucharSockets();
+        
     }
 
 public static get instace(){
@@ -31,12 +32,20 @@ public static get instace(){
 private escucharSockets(){
    console.log('Escuchando conexiones ---  Sockets');
    this.io.on('connection', cliente =>{
-    console.log('Cliente Conextado');   
+    // console.log(cliente.id);   
+      
+    //conectar cliente
+       socket.conectarCliente(cliente);
+      
+     //Configurar UsuaRIO
+     socket.configurarUsuario(cliente, this.io); 
+    
     //Escuchar mensajes
     socket.mensaje(cliente, this.io);
    
     //Desconectar
       socket.desconectar(cliente);
+
   
    });
 }
@@ -44,4 +53,6 @@ private escucharSockets(){
       this.httpServer.listen(this.port, callback);
       //ahi en vez de poner el servidor ponemos el httpServe
     }
+
+  
 }
