@@ -35,7 +35,7 @@ private escucharSockets(){
     // console.log(cliente.id);   
       
     //conectar cliente
-       socket.conectarCliente(cliente);
+       socket.conectarCliente(cliente , this.io);
       
      //Configurar UsuaRIO
      socket.configurarUsuario(cliente, this.io); 
@@ -44,8 +44,9 @@ private escucharSockets(){
     socket.mensaje(cliente, this.io);
    
     //Desconectar
-      socket.desconectar(cliente);
-
+      socket.desconectar(cliente, this.io);
+   //Obtener usuarios Activos
+       socket.obtenerUsuario(cliente, this.io);
   
    });
 }

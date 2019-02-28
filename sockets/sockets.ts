@@ -9,20 +9,18 @@ export const usuariosConectados = new UsuarioLista();
 
 
 // conectar cliente
-export const conectarCliente =(cliente: Socket) {
+export const conectarCliente =(cliente: Socket, io:socketIO.Server)=> {
 
     const usuario = new Usuario (cliente.id);
     usuariosConectados.agregar(usuario);
-}
-
-
-
-
+  
+}  
 //Configuracion basica para escucha una desconeccion
-export const desconectar = (cliente:Socket) =>{
+export const desconectar = (cliente:Socket, io:socketIO.Server) =>{
     cliente.on('disconnect', () =>{
        console.log('Cliente desconectado');
        usuariosConectados.deleteUsuario(cliente.id);
+       io.emit('usuarios-activos', usuariosConectados.getLista());
     });
 }
 
@@ -41,6 +39,8 @@ export const mensaje =( cliente:Socket, io:socketIO.Server) =>{
   //Aqui esta el punto inportante que vento estamos escuchando
   //el nombre del evento tiene que coinsidir con el que eviamos desde el front   
      usuariosConectados.actualizarNombre(cliente.id,payload.nombre);
+
+     io.emit('usuarios-activos', usuariosConectados.getLista());
         callback({
             ok:true,
             mensaje: 'Usuario logeado con exito',
@@ -48,3 +48,10 @@ export const mensaje =( cliente:Socket, io:socketIO.Server) =>{
         });
     });
 } 
+
+//Obtener Usuario
+export const obtenerUsuario = (cliente: Socket,io:socketIO.Server) =>{
+   cliente.on('obtener-usuario', () =>{
+    io.to(cliente.id).emit('usuarios-activos', usuariosConectados.getLista());
+   });
+}
